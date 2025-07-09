@@ -14,9 +14,10 @@ This infrastructure creates:
 ## Prerequisites
 
 - Azure CLI installed and authenticated
-- Terraform installed (version 0.12+)
+- Terraform installed (version 1.0+)
 - Azure subscription with appropriate permissions
 - Storage account for Terraform state (see backend configuration)
+- AzureRM provider version ~> 3.0
 
 ## Files Structure
 
@@ -24,7 +25,8 @@ This infrastructure creates:
 ├── main.tf          # Main infrastructure resources
 ├── variables.tf     # Variable definitions and defaults
 ├── outputs.tf       # Output values
-├── provider.tf      # Provider and backend configuration
+├── provider.tf      # Provider configuration
+├── backend.tf       # Backend and version configuration
 └── README.md        # This file
 ```
 
@@ -54,11 +56,13 @@ This infrastructure creates:
 
 ### Backend Configuration
 
-The configuration uses Azure Storage for remote state:
+The configuration uses Azure Storage for remote state, defined in `backend.tf`:
 - Resource Group: `tfstate-rg`
-- Storage Account: `yourtfstatestorage`
+- Storage Account: `yourtfstatestorage` (update with unique name)
 - Container: `tfstate`
 - State File: `prod.terraform.tfstate`
+- Terraform Version: >= 1.0
+- AzureRM Provider Version: ~> 3.0
 
 ## Usage
 
@@ -83,7 +87,16 @@ az storage container create \
   --account-name yourtfstatestorage
 ```
 
-### 2. Initialize and Deploy
+### 2. Update Backend Configuration
+
+Before initializing, update the storage account name in `backend.tf`:
+
+```hcl
+# In backend.tf, change this line:
+storage_account_name = "youruniquestatestorageaccount"
+```
+
+### 3. Initialize and Deploy
 
 ```bash
 # Initialize Terraform
@@ -123,8 +136,9 @@ After deployment, you can access:
 
 1. **Key Vault Access**: The current configuration grants access to the service principal running Terraform
 2. **Secret Management**: Avoid storing sensitive values in variables.tf in production
-3. **Soft Delete**: Key Vault has soft delete enabled for recovery
+3. **Soft Delete**: Key Vault has soft delete enabled for recovery with enhanced provider features
 4. **App Service Integration**: Web app can access secrets via Key Vault references
+5. **Provider Security**: Enhanced Key Vault features for better soft delete management
 
 ## Customization
 
@@ -157,7 +171,9 @@ terraform destroy
 - Key Vault names must be globally unique
 - App Service names must be globally unique
 - Ensure your Azure account has necessary permissions
-- Update the backend storage account name in `provider.tf` before use
+- Update the backend storage account name in `backend.tf` before use
+- The provider includes Key Vault features for better soft delete handling
+- Terraform version 1.0+ is required for this configuration
 
 ## Troubleshooting
 
