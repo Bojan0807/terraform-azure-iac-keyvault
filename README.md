@@ -22,12 +22,12 @@ This infrastructure creates:
 ## Files Structure
 
 ```
-├── main.tf          # Main infrastructure resources
-├── variables.tf     # Variable definitions and defaults
-├── outputs.tf       # Output values
-├── provider.tf      # Provider configuration
-├── backend.tf       # Backend and version configuration
-└── README.md        # This file
+── main.tf          # Main infrastructure resources
+── variables.tf     # Variable definitions and defaults
+── outputs.tf       # Output values
+── provider.tf      # Provider configuration
+── backend.tf       # Backend and version configuration
+── README.md        # This file
 ```
 
 ## Configuration Details
